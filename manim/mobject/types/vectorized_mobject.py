@@ -999,8 +999,14 @@ class VMobject(Mobject):
 
     # Alignment
     def align_points(self, vmobject):
-        # This probably makes the current vmobject and the given one have the same number of points,
-        # by adding extra points to the last sub-path. This method is never used in the whole library.
+        """Ensure `self` and `vmobject` have the same number of points.
+
+        If `self` and `vmobject` have the same number of points, this does
+        nothing.  Otherwise it divides each object's points into subpaths.
+        It creates null paths so each object has the same number of subpaths.
+        Then it ensures corresponding subpaths are equally long.  It does this
+        by subdividing parts of the shorter subpath.
+        """
         self.align_rgbas(vmobject)
         if self.get_num_points() == vmobject.get_num_points():
             return
@@ -1083,8 +1089,6 @@ class VMobject(Mobject):
         np.ndarray
             Points generated.
         """
-
-    def insert_n_curves_to_point_list(self, n, points):
         if len(points) == 1:
             nppcc = self.n_points_per_cubic_curve
             return np.repeat(points, nppcc * n, 0)
